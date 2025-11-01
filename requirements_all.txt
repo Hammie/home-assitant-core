@@ -994,6 +994,9 @@ freesms==0.2.0
 # homeassistant.components.fritzbox_callmonitor
 fritzconnection[qr]==1.15.0
 
+# homeassistant.components.fronius_web_api
+fronius-web-api==0.1.0
+
 # homeassistant.components.fyta
 fyta_cli==0.7.2
 
