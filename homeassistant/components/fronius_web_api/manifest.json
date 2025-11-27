@@ -8,7 +8,7 @@
   "homekit": {},
   "iot_class": "local_polling",
   "quality_scale": "bronze",
-  "requirements": ["fronius-web-api==0.1.0"],
+  "requirements": ["fronius-web-api==0.2.0"],
   "ssdp": [],
   "zeroconf": []
 }

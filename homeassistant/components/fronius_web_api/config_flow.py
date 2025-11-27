@@ -55,6 +55,21 @@ class PlaceholderHub:
             self.authenticate_sync, username, password
         )
 
+    async def set_battery_schedule(self, schedule_data: list[dict[str, Any]]) -> None:
+        """Set the battery schedule."""
+        # Implement the logic to set the battery schedule using the client
+        _LOGGER.info("Setting battery schedule with data: %s", schedule_data)
+
+        if not self._client:
+            raise RuntimeError("Client not authenticated")
+
+        from fronius_web_api import TimeOfUsePayload
+
+        await self.hass.async_add_executor_job(
+            self._client.set_battery_limit,
+            TimeOfUsePayload.model_validate(schedule_data),
+        )
+
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect.

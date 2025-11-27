@@ -1,0 +1,22 @@
+set_battery_schedule:
+  name: Set Battery Schedule
+  description: "Set the battery charging and discharging schedule."
+  fields:
+    power:
+      name: Power (in Watts)
+      description: "How much power to use for charging or discharging."
+      example: 1000
+      required: true
+    schedule_type:
+      name: Schedule Type
+      description: "The mode of charging for the battery ('CHARGE_MIN', 'CHARGE_MAX', 'DISCHARGE_MIN', 'DISCHARGE_MAX')."
+      example: "CHARGE_MIN"
+      required: true
+    start_time:
+      name: Start Time
+      description: "The time to start the battery schedule (HH:MM format)."
+      example: "08:00"
+    end_time:
+      name: End Time
+      description: "The time to end the battery schedule (HH:MM format)."
+      example: "18:00"

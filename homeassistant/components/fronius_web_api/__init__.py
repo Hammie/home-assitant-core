@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import voluptuous
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -20,6 +21,18 @@ _PLATFORMS: list[Platform] = [Platform.SELECT]
 # TODO Create ConfigEntry type alias with API object
 # TODO Rename type alias and update all entry annotations
 type New_NameConfigEntry = ConfigEntry
+
+
+SERVICE_SCHEMA = voluptuous.Schema(
+    {
+        voluptuous.Required("power", default=1000): int,
+        voluptuous.Required("schedule_type", default="CHARGE_MIN"): voluptuous.In(
+            ["CHARGE_MIN", "CHARGE_MAX", "DISCHARGE_MIN", "DISCHARGE_MAX"]
+        ),
+        voluptuous.Optional("start_time", default="00:00"): str,
+        voluptuous.Optional("end_time", default="23:59"): str,
+    }
+)
 
 
 # TODO Update entry annotation
@@ -42,6 +55,42 @@ async def async_setup_entry(hass: HomeAssistant, entry: New_NameConfigEntry) -> 
 
     # Forward the entry setup to the platforms (sensors, etc.)
     await hass.config_entries.async_forward_entry_setups(entry, ["select"])
+
+    async def set_battery_schedule(service_call):
+        """Set the battery schedule based on the service call."""
+        # Implement the logic to set the battery schedule using the hub instance
+        _LOGGER.info("Setting battery schedule with data: %s", service_call.data)
+        await hub.set_battery_schedule(
+            [
+                {
+                    "Active": True,
+                    "Power": service_call.data.get("power", 0),
+                    "ScheduleType": service_call.data.get(
+                        "schedule_type", "CHARGE_MIN"
+                    ),
+                    "TimeTable": {
+                        "Start": service_call.data.get("start_time", "00:00"),
+                        "End": service_call.data.get("end_time", "23:59"),
+                    },
+                    "Weekdays": {
+                        "Mon": True,
+                        "Tue": True,
+                        "Wed": True,
+                        "Thu": True,
+                        "Fri": True,
+                        "Sat": True,
+                        "Sun": True,
+                    },
+                }
+            ]
+        )
+
+    hass.services.async_register(
+        domain=DOMAIN,
+        service="set_battery_schedule",
+        service_func=set_battery_schedule,
+        schema=SERVICE_SCHEMA,
+    )
 
     return True
 
